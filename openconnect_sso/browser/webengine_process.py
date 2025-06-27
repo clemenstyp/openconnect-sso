@@ -256,7 +256,7 @@ def get_selectors(rules, credentials):
             if rule.fill == "totp":
                 raw = getattr(credentials, "totp", None)
                 # Nur wenn ein Wert existiert → auf 6 Stellen mit führenden Nullen auffüllen
-                padded = None if raw is None else str(raw).zfill(6)
+                padded = None if raw is None else str(raw).zfill(7)
                 value = json.dumps(padded)          # → z. B. "000123"
             else:
                 value = json.dumps(getattr(credentials, rule.fill, None))
