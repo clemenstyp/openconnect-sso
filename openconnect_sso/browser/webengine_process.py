@@ -252,11 +252,18 @@ def get_selectors(rules, credentials):
                 f"""var elem = document.querySelector({selector}); if (elem) {{ return; }}"""
             )
         elif rule.fill:
-            value = json.dumps(getattr(credentials, rule.fill, None))
+            #value = json.dumps(getattr(credentials, rule.fill, None))
+            if rule.fill == "totp":
+                raw = getattr(credentials, "totp", None)
+                # Nur wenn ein Wert existiert → auf 6 Stellen mit führenden Nullen auffüllen
+                padded = None if raw is None else str(raw).zfill(6)
+                value = json.dumps(padded)          # → z. B. "000123"
+            else:
+                value = json.dumps(getattr(credentials, rule.fill, None))
             if value:
                 statements.append(
                     #f"""var elem = document.querySelector({selector}); if (elem) {{ elem.dispatchEvent(new Event("focus")); elem.value = {value}; elem.dispatchEvent(new Event("blur")); }}"""
-                    f"""var elem = document.querySelector({selector}); if (elem) {{ elem.dispatchEvent(new Event("focus")); elem.value = \'{value}\'; elem.dispatchEvent(new Event(\'input\', {{bubbles: true}})); /*elem.dispatchEvent(new Event("blur"));*/ }}"""
+                    f"""var elem = document.querySelector({selector}); if (elem) {{ elem.dispatchEvent(new Event("focus")); elem.value = {value}; elem.dispatchEvent(new Event(\'input\', {{bubbles: true}})); /*elem.dispatchEvent(new Event("blur"));*/ }}"""
                 )
             else:
                 logger.warning(
