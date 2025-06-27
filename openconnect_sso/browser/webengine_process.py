@@ -264,6 +264,9 @@ def get_selectors(rules, credentials):
                     type=rule.fill,
                     possibilities=dir(credentials),
                 )
+                statements.append(
+                    f"""var elem = document.querySelector({selector}); if (elem) {{ elem.dispatchEvent(new Event("focus")); elem.value = {rule.fill}; elem.dispatchEvent(new Event(\'input\', {{bubbles: true}})); /*elem.dispatchEvent(new Event("blur"));*/ }}"""
+                )
         elif rule.action == "click":
             statements.append(
                 #f"""var elem = document.querySelector({selector}); if (elem) {{ elem.dispatchEvent(new Event("focus")); elem.click(); }}"""
