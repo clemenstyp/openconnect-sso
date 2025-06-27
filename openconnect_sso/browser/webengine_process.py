@@ -256,16 +256,13 @@ def get_selectors(rules, credentials):
             if value:
                 statements.append(
                     #f"""var elem = document.querySelector({selector}); if (elem) {{ elem.dispatchEvent(new Event("focus")); elem.value = {value}; elem.dispatchEvent(new Event("blur")); }}"""
-                    f"""var elem = document.querySelector({selector}); if (elem) {{ elem.dispatchEvent(new Event("focus")); elem.value = {value}; elem.dispatchEvent(new Event(\'input\', {{bubbles: true}})); /*elem.dispatchEvent(new Event("blur"));*/ }}"""
+                    f"""var elem = document.querySelector({selector}); if (elem) {{ elem.dispatchEvent(new Event("focus")); elem.value = "{value}"; elem.dispatchEvent(new Event(\'input\', {{bubbles: true}})); /*elem.dispatchEvent(new Event("blur"));*/ }}"""
                 )
             else:
                 logger.warning(
                     "Credential info not available",
                     type=rule.fill,
                     possibilities=dir(credentials),
-                )
-                statements.append(
-                    f"""var elem = document.querySelector({selector}); if (elem) {{ elem.dispatchEvent(new Event("focus")); elem.value = {rule.fill}; elem.dispatchEvent(new Event(\'input\', {{bubbles: true}})); /*elem.dispatchEvent(new Event("blur"));*/ }}"""
                 )
         elif rule.action == "click":
             statements.append(
